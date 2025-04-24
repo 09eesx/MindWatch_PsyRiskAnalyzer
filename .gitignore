@@ -1,0 +1,23 @@
+# Derleme ve önbellek dosyaları
+__pycache__/
+*.pyc
+
+# Jupyter notebook checkpoint dosyaları
+.ipynb_checkpoints/
+
+# Model arşivleri (zip dosyaları)
+*.zip
+
+# Colab & Google Drive klasörleri (kişisel veriler)
+content/
+drive/
+
+# VSCode / PyCharm gibi IDE ayar dosyaları (kendi ortamına özgü)
+.vscode/
+.idea/
+
+# Geçici dosyalar / loglar
+*.log
+*.tmp
+*.bak
+.DS_Store
