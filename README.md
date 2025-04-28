@@ -1,95 +1,106 @@
-Bu proje Google Colab üzerinden çalıştırılmak üzere optimize edilmiştir. 
-Lütfen `Google Drive` ile model dosyalarınızı bağlayın ve `hibrit_model.py` içerisindeki yolları güncelleyin.
+ MindWatch: Adli Psikolojik Risk Analiz Ajanı
+ Proje Tanımı
+MindWatch, doğal dil işleme (NLP) ve makine öğrenimi teknikleri kullanarak yazılı metinlerdeki psikolojik risk faktörlerini analiz eden bir sistemdir.
+Bu model, depresyon, intihar eğilimi, tehdit, öfke, manipülasyon gibi psikolojik durumları tespit eder ve her bir metne profesyonel bir risk değerlendirmesi sunar.
+Sistem, BERT, RoBERTa ve Meta LLaMA 70B API çıktılarının hibrit birleştirilmesiyle daha doğru analizler üretir.
+
+ Kullanılan Teknolojiler
+BERT Modeli: Psikolojik risk sınıflandırması için fine-tune edilmiş.
+
+RoBERTa Modeli: Duygusal analiz ve risk tespiti için optimize edilmiş.
+
+LLaMA 70B API: Derinlemesine psikolojik değerlendirme ve açıklamalı risk analizi.
+
+Gradio Arayüzü: Hızlı kullanıcı arayüzü ile Colab uyumlu çalışma.
+
+Google Drive Entegrasyonu: Model dosyaları Drive üzerinden yüklenir.
+
+ Modelin Sağladığı Analizler
+Genel Duygu Tonu: Pozitif / Negatif / Nötr sınıflaması.
+
+Risk Tipi Belirleme: (Depresyon, İntihar, Öfke, Manipülasyon, Tehdit vb.)
+
+Tehdit Seviyesi: 0-10 arası puanlama.
+
+Manipülasyon Belirtileri: Var / Yok tespiti.
+
+Empati Seviyesi: Düşük / Orta / Yüksek.
+
+Profesyonel Açıklamalar: LLaMA API üzerinden detaylı psikolojik raporlar.
+
+ Kurulum ve Kullanım
+1. Gerekli Kütüphaneleri Yükleyin
+Colab veya lokal ortamda:
+
+bash
+Kopyala
+Düzenle
+pip install transformers torch numpy requests gradio
+2. Google Drive'ı Bağlayın
+Model ağırlıkları Drive'da saklandığı için:
+
+python
+Kopyala
+Düzenle
+from google.colab import drive
+drive.mount('/content/drive')
+Ardından hibrit_model.py dosyasındaki model yükleme yollarını kendi Drive yolunuza göre düzenleyin.
+
+3. Uygulamayı Başlatın
+Gradio arayüzünü çalıştırmak için:
+
+python
+Kopyala
+Düzenle
+import gradio as gr
+from hibrit_model import hybrid_analysis
+
+def analyze_text(text):
+    result = hybrid_analysis(text)
+    return f"BERT: {result['bert_result']['final_decision']} ({result['bert_result']['confidence']*100:.1f}%)\n" \
+           f"RoBERTa: {result['roberta_result']['final_decision']} ({result['roberta_result']['confidence']*100:.1f}%)\n" \
+           f"Ensemble: {result['ensemble_result']['final_decision']} ({result['ensemble_result']['confidence']*100:.1f}%)\n" \
+           f"LLaMA Label: {result['llama_label']}"
+
+interface = gr.Interface(fn=analyze_text, inputs="text", outputs="text", title="MindWatch: Psychological Risk Analyzer")
+interface.launch(share=True)
+share=True dersen link verir, herkes tarayıcıdan ulaşabilir.
+
+ LLaMA API Kullanımı
+LLaMA analizleri için IO.net veya Intelligence API'den alınmış bir API anahtarınız olmalıdır.
+
+API anahtarınızı hibrit_model.py içindeki ask_llama(text) fonksiyonunda Authorization kısmına ekleyin.
+
+Her analiz sırasında 7 farklı prompt LLaMA'ya gönderilerek profesyonel bir psikolojik analiz oluşturulur.
+
+ Örnek Analiz Akışı
+Verilen bir kullanıcı metni için:
 
 
-Tabii! İşte projeniz için bir **README** dosyası örneği:
+Model	Sonuç	Güven Skoru (%)
+BERT	Depresyon	85.4%
+RoBERTa	Anksiyete	78.2%
+Ensemble	Depresyon	91.2%
+LLaMA	Riskli (Depresyon + İntihar Eğilimi)	
+Kritik risk algılandığında sistem ayrıca ⚠️ alarm verir.
 
----
+ Proje Sonuçları
+Model, psikolojik riskleri yüksek doğrulukla tespit etmektedir.
 
-# **Adli Psikolojik Risk Tespit Ajanı**
+Hibrit yapısı sayesinde tek bir modelin hatalarına düşmeden sağlam bir değerlendirme sağlar.
 
-## **Proje Tanımı**
-Adli Psikolojik Risk Tespit Ajanı, doğal dil işleme (NLP) ve makine öğrenimi teknikleri kullanarak yazılı ifadelerdeki psikolojik risk faktörlerini analiz etmek için geliştirilmiş bir modeldir. Bu model, metinlerden duygu durumu, psikolojik hastalık belirtileri, manipülasyon izleri, empati seviyesi ve tehdit seviyesini tespit ederek, potansiyel psikolojik riskleri sınıflandırır.
+Derinlemesine LLaMA analizleri ile sadece sınıflama değil, neden riskli olduğunu açıklayan profesyonel çıktılar üretir.
 
-## **Kullanılan Teknolojiler ve Modeller**
-- **RoBERTa Modeli**: Bu model, duygusal ve psikolojik riskleri tespit etmek için eğitilmiş bir dil modeli kullanır.
-- **BERT Modeli**: Metin sınıflandırması ve psikolojik risk tespiti için bir başka derin öğrenme modeli.
-- **LLaMA API**: Meta LLaMA modelini kullanarak derinlemesine psikolojik analiz yapılır ve metinlerin psikolojik durumları hakkında daha kapsamlı bilgiler sağlanır.
+ Gelecek Geliştirmeler
+Çok Dilli Destek: İngilizce dışındaki diller için model genişletme.
 
-## **Model Özellikleri**
-- **Genel Duygu Tonu**: Metnin pozitif, negatif veya nötr olup olmadığını analiz eder.
-- **Risk Tipi**: Metindeki duygusal ve psikolojik durumları değerlendirir (Öfke, Depresyon, Tehdit, Manipülasyon, Kişilik Bozukluğu vb.).
-- **Tehdit Seviyesi**: 0-10 arasında bir tehdit seviyesi belirler.
-- **Manipülasyon Belirtileri**: Metinde manipülasyon izlerinin olup olmadığını belirler.
-- **Empati Seviyesi**: Düşük, orta veya yüksek empati seviyeleri belirler.
-- **Profesyonel Açıklama**: Psikolojik analiz ve risk değerlendirmeleri hakkında profesyonel açıklamalar sunar.
+Gerçek Zamanlı İzleme: Online sohbet platformları veya sosyal medya gibi yerlerde psikolojik risklerin izlenmesi.
 
-## **Modelin Kullanımı**
+Otomatik Kriz Müdahale Önerileri: Kritik risk algılandığında otomatik destek veya müdahale planları sunulması.
 
-### **Modelin Eğitilmesi**
-Model, aşağıdaki adımlar ile eğitilebilir:
-1. **Veri Hazırlığı**: Etiketli psikolojik risk içeren metinler (örneğin, anksiyete, depresyon, intihar eğilimi vb.) kullanılmalıdır.
-2. **Model Eğitimi**: Hugging Face üzerinde mevcut BERT ve RoBERTa modelleri fine-tune edilerek kullanılabilir.
-3. **Test ve Doğrulama**: Modelin doğruluğunu test etmek için uygun test verileri kullanılmalıdır.
-
-### **Kodun Çalıştırılması**
-Aşağıdaki adımlar ile modeli çalıştırabilirsiniz:
-
-1. **Gerekli Kütüphaneleri Yükleyin**:
-   ```bash
-   pip install transformers torch numpy requests
-   ```
-
-2. **Modeli Yükleyin ve Test Edin**:
-   ```python
-   from transformers import AutoTokenizer, AutoModelForSequenceClassification
-   import torch
-   import numpy as np
-
-   # Modeli yükleme fonksiyonları
-   def load_roberta_model(path="path_to_roberta_model"):
-       tokenizer = AutoTokenizer.from_pretrained(path)
-       model = AutoModelForSequenceClassification.from_pretrained(path)
-       return tokenizer, model
-
-   def load_bert_model(path="path_to_bert_model"):
-       tokenizer = AutoTokenizer.from_pretrained(path)
-       model = AutoModelForSequenceClassification.from_pretrained(path)
-       return tokenizer, model
-
-   # Metin üzerinden tahmin yapma
-   def predict_model(text, tokenizer, model):
-       model.eval()
-       inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
-       with torch.no_grad():
-           outputs = model(**inputs)
-           logits = outputs.logits
-           probs = torch.nn.functional.softmax(logits, dim=1)
-       probs = probs.cpu().numpy().flatten()
-       return {label: float(prob) for label, prob in zip(label_list, probs)}
-
-   # Model çıktısını almak için örnek kullanım
-   text = "I feel like I don’t matter to anyone. Life is meaningless."
-   result = hybrid_analysis(text, roberta_tok, roberta_model, bert_tok, bert_model)
-   print("🧠 Final Risk Label:", result["final_label"])
-   print("📊 RoBERTa Probs:", result["roberta_probs"])
-   print("📊 BERT Probs:", result["bert_probs"])
-   print("🧾 LLaMA Analysis:", result["llama_analysis"])
-   ```
-
-3. **LLaMA API İle Çalıştırma**:
-   - **API Anahtarınız** gereklidir.
-   - LLaMA modeline istek göndermek için `requests` kütüphanesini kullanarak modelden analiz elde edebilirsiniz.
-
-## **Proje Sonuçları**
-Proje, kullanıcıların metinlerdeki psikolojik riskleri belirlemelerine yardımcı olur. Bu analiz, özellikle adli psikoloji, psikoterapi ve kişisel gelişim alanlarında kullanılabilir. Ayrıca, bu modelin çıktıları, kriz durumları için erken uyarı mekanizmaları geliştirmek için değerlidir.
-
-## **Sonuçlar ve Değerlendirme**
-Model, üç ana kaynaktan (RoBERTa, BERT ve LLaMA) gelen çıktıları harmanlayarak daha doğru ve kapsamlı risk değerlendirmeleri sağlar. Bu model, psikolojik destek isteyen bireylerin hızlı bir şekilde tespit edilmesine yardımcı olabilir.
-
-## **Gelecek Adımlar**
-- **Model Geliştirme**: Daha fazla etiketli veriye dayalı olarak modelin doğruluğunu artırma.
-- **Çok Dilli Destek**: Farklı dillerde metinleri analiz edebilme yeteneği eklenebilir.
-- **Gerçek Zamanlı İzleme**: Canlı metin akışlarına dayanarak psikolojik risk tespiti yapabilen sistemler geliştirme.
+ses ve görüntü verileriyle modeli besleme
 
 
+ Kapanış
+MindWatch, psikolojik risk analizinde hem akademik, hem adli kullanım için yüksek potansiyelli bir destek aracıdır.
+Yarışmalarda, klinik destek uygulamalarında ve adli vaka analizlerinde rahatlıkla kullanılabilir.
